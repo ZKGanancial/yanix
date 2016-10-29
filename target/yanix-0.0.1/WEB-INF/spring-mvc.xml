@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/jee 
+                           http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+    
+    
+  <!-- **************************************************************** -->
+  <!--  RESOURCE FOLDERS CONFIGURATION                                  -->
+  <!--  Dispatcher configuration for serving static resources           -->
+  <!-- **************************************************************** -->
+  <mvc:resources location="/WEB-INF/templates/ajax/" mapping="/ajax/**" />
+  <mvc:resources location="/WEB-INF/templates/data/" mapping="/data/**" />
+  <mvc:resources location="/WEB-INF/templates/img/" mapping="/img/**" />
+  <mvc:resources location="/WEB-INF/templates/css/" mapping="/css/**" />
+  <mvc:resources location="/WEB-INF/templates/js/" mapping="/js/**" />
+  <mvc:resources location="/WEB-INF/templates/fonts/" mapping="/fonts/**" />
+  <mvc:resources location="/WEB-INF/templates/php/" mapping="/php/**" />
+  <mvc:resources location="/WEB-INF/templates/sound/" mapping="/sound/**" />
+    
+
+  <!-- **************************************************************** -->
+  <!--  SPRING ANNOTATION PROCESSING                                    -->
+  <!-- **************************************************************** -->
+  <mvc:annotation-driven conversion-service="conversionService" />
+  <context:component-scan base-package="com.zkg.web.yanix" />
+
+
+  <!-- **************************************************************** -->
+  <!--  MESSAGE EXTERNALIZATION/INTERNATIONALIZATION                    -->
+  <!--  Standard Spring MessageSource implementation                    -->
+  <!-- **************************************************************** -->
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="Messages" />
+  </bean>
+
+
+  <!-- **************************************************************** -->
+  <!--  CONVERSION SERVICE                                              -->
+  <!--  Standard Spring formatting-enabled implementation               -->
+  <!-- **************************************************************** -->
+  <bean id="conversionService" 
+        class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+  </bean>
+
+
+  <!-- **************************************************************** -->
+  <!--  THYMELEAF-SPECIFIC ARTIFACTS                                    -->
+  <!--  TemplateResolver <- TemplateEngine <- ViewResolver              -->
+  <!-- **************************************************************** -->
+
+  <bean id="templateResolver"
+        class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+    <property name="prefix" value="/WEB-INF/templates/" />
+    <property name="suffix" value=".html" />
+    <property name="templateMode" value="HTML5" />
+  </bean>
+    
+  <bean id="templateEngine"
+        class="org.thymeleaf.spring4.SpringTemplateEngine">
+    <property name="templateResolver" ref="templateResolver" />
+  </bean>
+   
+  <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+    <property name="templateEngine" ref="templateEngine" />
+  </bean>
+  
+  <!-- **************************************************************** -->
+  <!--  Root Application Context/MyBatis Mappers                        -->
+  <!--  												                -->
+  <!-- **************************************************************** -->
+  <jee:jndi-lookup id="dataSource" jndi-name="jdbc/postgres" expected-type="javax.sql.DataSource" />
+  
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="mapperLocations" value="classpath*:mappers/**/*.xml" />
+    <property name="configuration">
+	    <bean class="org.apache.ibatis.session.Configuration">
+	      <property name="mapUnderscoreToCamelCase" value="true"/>
+	    </bean>
+  	</property>
+  </bean>
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+       <property name="basePackage" value="com.zkg.web.yanix.bl.mappers" />
+       <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+   </bean>    
+
+    
+</beans>

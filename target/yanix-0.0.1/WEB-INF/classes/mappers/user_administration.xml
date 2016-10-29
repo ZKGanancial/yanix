@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zkg.web.yanix.bl.mappers.UserAdministrationMapper">
+  <select id="getUserAccount" resultType="com.zkg.web.yanix.bl.models.UserAccount" statementType="PREPARED">
+    select 
+    	user_name,
+   		pass_word,
+   		first_name,
+   		last_name
+   	from
+   		mst_user
+   	where
+   		user_name = #{userName}
+  </select>
+</mapper>
