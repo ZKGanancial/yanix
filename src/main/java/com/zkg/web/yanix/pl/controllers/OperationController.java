@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.zkg.web.yanix.bl.models.Customer;
 import com.zkg.web.yanix.bl.services.CustomerService;
@@ -43,7 +44,7 @@ public class OperationController {
 		}
 		return "jqgrid";
 	}
-	@RequestMapping(value = "/jqgrid/updateCustomer")
+	@RequestMapping(value = "/jqgrid/updateCustomer", method=RequestMethod.POST)
 	public String updateCustomer(Model model, Customer customer) {
 		try {
 			customerService.updateCustomer(customer);
